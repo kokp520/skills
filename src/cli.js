@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import https from 'https';
 import { fileURLToPath } from 'url';
 
 // ANSI Escape Codes for CLI Colors
@@ -25,6 +26,9 @@ const LOCAL_SKILLS_DIR = path.join(PROJECT_ROOT, 'skills');
 // Target system directories
 const AGENT_SKILLS_DIR = path.join(os.homedir(), '.agent', 'skills');
 const GEMINI_SKILLS_DIR = path.join(os.homedir(), '.gemini', 'skills');
+
+// Default GitHub fallback for wadiolk's official skills
+const DEFAULT_GITHUB_OWNER_REPO = 'adiwu/wadiolk';
 
 const ARGS = process.argv.slice(2);
 const COMMAND = ARGS[0];
@@ -99,6 +103,23 @@ function copyFolderSync(from, to) {
     } else {
       fs.copyFileSync(fromPath, toPath);
     }
+  });
+}
+
+// Helper: HTTPS GET request wrapper returning raw text
+function downloadRawText(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: { 'User-Agent': 'Wadiolk-CLI' } }, (res) => {
+      if (res.statusCode !== 200) {
+        reject(new Error(`Failed to fetch from remote Server. Status Code: ${res.statusCode}`));
+        return;
+      }
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => { resolve(data); });
+    }).on('error', (err) => {
+      reject(err);
+    });
   });
 }
 
@@ -342,32 +363,82 @@ function handleValidate() {
   }
 }
 
-// 6. Add Command
-function handleAdd(name) {
-  if (!name) {
-    console.error(`${RED}[ERROR] Please specify the skill name to install.${RESET}\nUsage: wadiolk add <skill-name>`);
+// 6. Add Command (Asynchronous remote and local resolver)
+async function handleAdd(inputPath) {
+  if (!inputPath) {
+    console.error(`${RED}[ERROR] Please specify a skill name or GitHub path to install.${RESET}\nUsage Examples:\n  wadiolk add br-creator (Local fallback)\n  wadiolk add username/repo/skills/some-skill (Remote GitHub)`);
     process.exit(1);
   }
 
-  const sourcePath = path.join(LOCAL_SKILLS_DIR, name);
-  if (!fs.existsSync(sourcePath) || !fs.statSync(sourcePath).isDirectory()) {
-    console.error(`${RED}[ERROR] Skill "${name}" not found in Wadiolk library.${RESET}\nYou can run "wadiolk list" to view available skills.`);
-    process.exit(1);
+  const targetDir = path.join(process.cwd(), '.gemini', 'skills');
+
+  // Case 1: GitHub URL or Owner/Repo pattern (e.g., adiwu/wadiolk/skills/br-creator)
+  const githubPattern = /^(?:github:)?([^/]+)\/([^/]+)(?:\/skills)?\/([^/]+)$/;
+  const match = inputPath.match(githubPattern);
+
+  if (match) {
+    const owner = match[1];
+    const repo = match[2];
+    const skillName = match[3];
+
+    const remoteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/skills/${skillName}/SKILL.md`;
+    const finalTargetDir = path.join(targetDir, skillName);
+
+    console.log(`${BLUE}[INFO] Launching remote installer for "${skillName}"...${RESET}`);
+    console.log(`${BLUE}[INFO] URL:${RESET} ${remoteUrl}`);
+
+    try {
+      const fileContent = await downloadRawText(remoteUrl);
+      
+      ensureDirSync(finalTargetDir);
+      const skillMdPath = path.join(finalTargetDir, 'SKILL.md');
+      fs.writeFileSync(skillMdPath, fileContent, 'utf-8');
+
+      console.log(`${GREEN}[SUCCESS] Remotely downloaded and installed "${skillName}"!${RESET}`);
+      console.log(`${BLUE}[INFO] Project Path:${RESET} ${finalTargetDir}`);
+    } catch (err) {
+      console.error(`${RED}[ERROR] Remote installation failed: ${err.message}${RESET}`);
+      console.error(`Please verify that the repository is public and the path "skills/${skillName}/SKILL.md" exists.`);
+      process.exit(1);
+    }
+    return;
   }
 
-  const targetDir = path.join(process.cwd(), '.gemini', 'skills', name);
-  
-  if (fs.existsSync(targetDir)) {
-    console.log(`${YELLOW}[INFO] Target path already exists at ${targetDir}. Overwriting...${RESET}`);
-  }
+  // Case 2: Simple Local Skill fallback (e.g., wadiolk add br-creator)
+  const localSourcePath = path.join(LOCAL_SKILLS_DIR, inputPath);
 
-  try {
-    copyFolderSync(sourcePath, targetDir);
-    console.log(`${GREEN}[SUCCESS] Installed "${name}" to current project!${RESET}`);
-    console.log(`${BLUE}[INFO] Project Path:${RESET} ${targetDir}`);
-    console.log(`Now commit this project to Git so other collaborators' Agents can use this skill.`);
-  } catch (err) {
-    console.error(`${RED}[ERROR] Installation failed: ${err.message}${RESET}`);
+  if (fs.existsSync(localSourcePath) && fs.statSync(localSourcePath).isDirectory()) {
+    const finalTargetDir = path.join(targetDir, inputPath);
+    if (fs.existsSync(finalTargetDir)) {
+      console.log(`${YELLOW}[WARN] Target path already exists at ${finalTargetDir}. Overwriting...${RESET}`);
+    }
+    try {
+      copyFolderSync(localSourcePath, finalTargetDir);
+      console.log(`${GREEN}[SUCCESS] Installed "${inputPath}" to current project locally!${RESET}`);
+      console.log(`${BLUE}[INFO] Project Path:${RESET} ${finalTargetDir}`);
+    } catch (err) {
+      console.error(`${RED}[ERROR] Local installation failed: ${err.message}${RESET}`);
+    }
+  } else {
+    // If local copy fails, try to fetch it automatically from your default GitHub Repo
+    console.log(`${YELLOW}[INFO] Skill "${inputPath}" not found locally. Searching default remote repository (${DEFAULT_GITHUB_OWNER_REPO})...${RESET}`);
+    
+    const remoteUrl = `https://raw.githubusercontent.com/${DEFAULT_GITHUB_OWNER_REPO}/main/skills/${inputPath}/SKILL.md`;
+    const finalTargetDir = path.join(targetDir, inputPath);
+
+    try {
+      const fileContent = await downloadRawText(remoteUrl);
+      ensureDirSync(finalTargetDir);
+      const skillMdPath = path.join(finalTargetDir, 'SKILL.md');
+      fs.writeFileSync(skillMdPath, fileContent, 'utf-8');
+
+      console.log(`${GREEN}[SUCCESS] Remotely downloaded and installed "${inputPath}" from ${DEFAULT_GITHUB_OWNER_REPO}!${RESET}`);
+      console.log(`${BLUE}[INFO] Project Path:${RESET} ${finalTargetDir}`);
+    } catch (err) {
+      console.error(`${RED}[ERROR] Skill "${inputPath}" could not be resolved locally or remotely.${RESET}`);
+      console.error(`Attempted remote path: ${remoteUrl}`);
+      process.exit(1);
+    }
   }
 }
 
@@ -385,7 +456,9 @@ ${BOLD}Commands:${RESET}
   ${GREEN}unlink${RESET}          Remove all Wadiolk symlinks from the system directory
   ${GREEN}list${RESET}            Display the list of local and linked custom skills
   ${GREEN}validate${RESET}        Validate the format of local skills (Frontmatter checks)
-  ${GREEN}add <name>${RESET}      Copy specified skill into current project's .gemini/skills/ directory
+  ${GREEN}add <path>${RESET}      Install specified skill into current project's .gemini/skills/ directory
+                  Supports local name: "br-creator"
+                  Supports remote GitHub: "username/repo/skills/skill-name"
   ${GREEN}help${RESET}            Display this help message
 
 ${BOLD}System Paths:${RESET}
@@ -395,27 +468,29 @@ ${BOLD}System Paths:${RESET}
 }
 
 // Route dispatcher
-switch (COMMAND) {
-  case 'create':
-    handleCreate(ARGS[1]);
-    break;
-  case 'link':
-    handleLink();
-    break;
-  case 'unlink':
-    handleUnlink();
-    break;
-  case 'list':
-    handleList();
-    break;
-  case 'validate':
-    handleValidate();
-    break;
-  case 'add':
-    handleAdd(ARGS[1]);
-    break;
-  case 'help':
-  default:
-    handleHelp();
-    break;
-}
+(async () => {
+  switch (COMMAND) {
+    case 'create':
+      handleCreate(ARGS[1]);
+      break;
+    case 'link':
+      handleLink();
+      break;
+    case 'unlink':
+      handleUnlink();
+      break;
+    case 'list':
+      handleList();
+      break;
+    case 'validate':
+      handleValidate();
+      break;
+    case 'add':
+      await handleAdd(ARGS[1]);
+      break;
+    case 'help':
+    default:
+      handleHelp();
+      break;
+  }
+})();
