@@ -24,7 +24,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 const LOCAL_SKILLS_DIR = path.join(PROJECT_ROOT, 'skills');
 
 // Target system directories
-const AGENT_SKILLS_DIR = path.join(os.homedir(), '.agent', 'skills');
+const AGENT_SKILLS_DIR = path.join(os.homedir(), '.agents', 'skills');
 const GEMINI_SKILLS_DIR = path.join(os.homedir(), '.gemini', 'skills');
 
 // Default GitHub fallback for wadiolk's official skills
@@ -190,6 +190,34 @@ function handleLink() {
     }
   }
 
+  // Auto-sync other global skills from ~/.agents/skills to ~/.gemini/skills
+  if (fs.existsSync(AGENT_SKILLS_DIR)) {
+    try {
+      const agentSkills = fs.readdirSync(AGENT_SKILLS_DIR).filter(file => {
+        const fullPath = path.join(AGENT_SKILLS_DIR, file);
+        return fs.statSync(fullPath).isDirectory();
+      });
+
+      let syncCount = 0;
+      for (const skill of agentSkills) {
+        const sourcePath = path.join(AGENT_SKILLS_DIR, skill);
+        const geminiLinkPath = path.join(GEMINI_SKILLS_DIR, skill);
+
+        if (!fs.existsSync(geminiLinkPath)) {
+          if (createSymlink(sourcePath, geminiLinkPath)) {
+            console.log(`  [SYNC] Linked global ${CYAN}${skill}${RESET} to .gemini`);
+            syncCount++;
+          }
+        }
+      }
+      if (syncCount > 0) {
+        console.log(`\n${BLUE}[INFO] Successfully synchronized ${syncCount} global skill(s) from .agents to .gemini${RESET}`);
+      }
+    } catch (err) {
+      console.error(`${RED}[ERROR] Failed to synchronize global skills:${RESET}`, err.message);
+    }
+  }
+
   console.log(`\n${GREEN}[SUCCESS] Linked ${successCount} skills to the system.${RESET}`);
   console.log(`Now you can use them directly in your Agent conversations.`);
 }
@@ -265,7 +293,7 @@ function handleList() {
   }
 
   // Active Symlinks
-  console.log(`\n${BLUE}[Active Symlinks] (~/.agent/skills):${RESET}`);
+  console.log(`\n${BLUE}[Active Symlinks] (~/.agents/skills):${RESET}`);
   if (fs.existsSync(AGENT_SKILLS_DIR)) {
     const activeSkills = fs.readdirSync(AGENT_SKILLS_DIR).filter(file => {
       const fullPath = path.join(AGENT_SKILLS_DIR, file);

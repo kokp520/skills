@@ -5,7 +5,7 @@ Wadiolk is a zero-dependency CLI package built to bootstrap, validate, and manag
 ## Key Features
 
 - **Zero-Dependency**: Written entirely in Node.js native APIs. Boots up in under 10ms.
-- **Smart Symlinking**: Links local skills to ~/.agent/skills and ~/.gemini/skills instantly.
+- **Smart Symlinking**: Links local skills to ~/.agents/skills and ~/.gemini/skills instantly.
 - **Linter Validation**: Scans SKILL.md Frontmatter schemas to guarantee compatibility before loading.
 - **Project Distribution**: Installs specific skill snapshots straight into a project's .gemini/skills/ folder for seamless Git collaboration.
 
@@ -88,7 +88,7 @@ They can run this directly in their terminal without cloning the repository manu
 ```bash
 npx github:kokp520/skills link
 ```
-*Note: This automatically creates symlinks for all skills inside the wadiolk repository to `~/.agent/skills/` and `~/.gemini/skills/`.*
+*Note: This automatically creates symlinks for all skills inside the wadiolk repository to `~/.agents/skills/` and `~/.gemini/skills/`.*
 
 ### 2. Project-Level Installation (Recommended for Team Git Repositories)
 This copies a static snapshot of the `br-creator` skill directly into the active project repository, allowing it to be committed and shared with the team in Git.
