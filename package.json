@@ -1,9 +1,10 @@
 {
-  "name": "wadiolk",
+  "name": "skills",
   "version": "1.0.0",
-  "description": "Wadiolk - Personal Skills Developer Kit for Gemini Antigravity Agent",
+  "description": "Personal Skills Developer Kit for Gemini Antigravity Agent",
   "main": "src/cli.js",
   "bin": {
+    "skills": "./src/cli.js",
     "wadiolk": "./src/cli.js"
   },
   "type": "module",
@@ -17,7 +18,7 @@
     "agent",
     "cli"
   ],
-  "author": "adiwu",
+  "author": "kokp520",
   "license": "MIT",
   "engines": {
     "node": ">=16.0.0"

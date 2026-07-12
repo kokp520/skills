@@ -68,14 +68,14 @@ Once published or pushed to GitHub, you can execute these commands in any reposi
 
 | Action | NPM command (npx) | Bun command (bunx) |
 | :--- | :--- | :--- |
-| List Skills | npx github:username/wadiolk list | bunx github:username/wadiolk list |
-| Link to System | npx github:username/wadiolk link | bunx github:username/wadiolk link |
-| Unlink Symlinks | npx github:username/wadiolk unlink | bunx github:username/wadiolk unlink |
-| Validate Format | npx github:username/wadiolk validate | bunx github:username/wadiolk validate |
-| Add to Project | npx github:username/wadiolk add <name> | bunx github:username/wadiolk add <name> |
-| Help Menu | npx github:username/wadiolk help | bunx github:username/wadiolk help |
+| List Skills | npx github:kokp520/skills list | bunx github:kokp520/skills list |
+| Link to System | npx github:kokp520/skills link | bunx github:kokp520/skills link |
+| Unlink Symlinks | npx github:kokp520/skills unlink | bunx github:kokp520/skills unlink |
+| Validate Format | npx github:kokp520/skills validate | bunx github:kokp520/skills validate |
+| Add to Project | npx github:kokp520/skills add <name> | bunx github:kokp520/skills add <name> |
+| Help Menu | npx github:kokp520/skills help | bunx github:kokp520/skills help |
 
-Replace `username/wadiolk` with your actual GitHub username and repository name.
+---
 
 ## How to Install the "br-creator" Skill (For Other Team Members)
 
@@ -86,7 +86,7 @@ This links the skill globally to the Agent system. Once installed, the `br-creat
 
 They can run this directly in their terminal without cloning the repository manually:
 ```bash
-npx github:username/wadiolk link
+npx github:kokp520/skills link
 ```
 *Note: This automatically creates symlinks for all skills inside the wadiolk repository to `~/.agent/skills/` and `~/.gemini/skills/`.*
 
@@ -95,11 +95,11 @@ This copies a static snapshot of the `br-creator` skill directly into the active
 
 In the root directory of the target project, they should run:
 ```bash
-npx github:username/wadiolk add br-creator
+npx github:kokp520/skills add br-creator
 ```
-*Note: Thanks to our built-in remote resolver, if "br-creator" is not found on their local machine, our CLI automatically downlinks the latest version from your GitHub repository (username/wadiolk) and copies it to `.gemini/skills/br-creator`. Once copied, commit the newly added files to the project repository's Git.*
+*Note: Thanks to our built-in remote resolver, if "br-creator" is not found on their local machine, our CLI automatically downlinks the latest version from your GitHub repository (kokp520/skills) and copies it to `.gemini/skills/br-creator`. Once copied, commit the newly added files to the project repository's Git.*
 
 They can also explicitly download a skill from any other public GitHub repository by using:
 ```bash
-npx github:username/wadiolk add github-username/repo-name/skills/skill-name
+npx github:kokp520/skills add github-username/repo-name/skills/skill-name
 ```

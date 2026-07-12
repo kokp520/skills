@@ -28,7 +28,7 @@ const AGENT_SKILLS_DIR = path.join(os.homedir(), '.agent', 'skills');
 const GEMINI_SKILLS_DIR = path.join(os.homedir(), '.gemini', 'skills');
 
 // Default GitHub fallback for wadiolk's official skills
-const DEFAULT_GITHUB_OWNER_REPO = 'adiwu/wadiolk';
+const DEFAULT_GITHUB_OWNER_REPO = 'kokp520/skills';
 
 const ARGS = process.argv.slice(2);
 const COMMAND = ARGS[0];
