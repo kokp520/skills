@@ -1,4 +1,4 @@
-.PHONY: default new link unlink list help init validate add
+.PHONY: default new list help init validate add
 
 # Default action
 default: help
@@ -14,17 +14,7 @@ new:
 	@chmod +x src/cli.js
 	@node src/cli.js create $(name)
 
-# Symlink all local skills to the Agent system (development recommended)
-link:
-	@chmod +x src/cli.js
-	@node src/cli.js link
-
-# Unlink all Wadiolk symlinks from the Agent system
-unlink:
-	@chmod +x src/cli.js
-	@node src/cli.js unlink
-
-# List both local and linked skills
+# List local skills
 list:
 	@chmod +x src/cli.js
 	@node src/cli.js list

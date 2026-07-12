@@ -5,7 +5,6 @@ Wadiolk is a zero-dependency CLI package built to bootstrap, validate, and manag
 ## Key Features
 
 - **Zero-Dependency**: Written entirely in Node.js native APIs. Boots up in under 10ms.
-- **Smart Symlinking**: Links local skills to ~/.agents/skills and ~/.gemini/skills instantly.
 - **Linter Validation**: Scans SKILL.md Frontmatter schemas to guarantee compatibility before loading.
 - **Project Distribution**: Installs specific skill snapshots straight into a project's .gemini/skills/ folder for seamless Git collaboration.
 
@@ -39,25 +38,13 @@ make validate
 ```
 Ensures all your local skills have valid YAML Frontmatter blocks (e.g., name and description).
 
-### 3. Symlink to Agent System
-```bash
-make link
-```
-Symlinks all local skills to active Agent system paths. Changes made here apply instantly to the Agent.
-
-### 4. Remove Symlinks
-```bash
-make unlink
-```
-Safely untethers your local skills from the Agent system.
-
-### 5. Install Skill Snapshot to Current Project
+### 3. Install Skill Snapshot to Current Project
 ```bash
 make add name=my-skill
 ```
 Copies the specified skill into your current working directory's .gemini/skills/ folder.
 
-### 6. List Active Status
+### 4. List Active Status
 ```bash
 make list
 ```
@@ -69,8 +56,6 @@ Once published or pushed to GitHub, you can execute these commands in any reposi
 | Action | NPM command (npx) | Bun command (bunx) |
 | :--- | :--- | :--- |
 | List Skills | npx github:kokp520/skills list | bunx github:kokp520/skills list |
-| Link to System | npx github:kokp520/skills link | bunx github:kokp520/skills link |
-| Unlink Symlinks | npx github:kokp520/skills unlink | bunx github:kokp520/skills unlink |
 | Validate Format | npx github:kokp520/skills validate | bunx github:kokp520/skills validate |
 | Add to Project | npx github:kokp520/skills add <name> | bunx github:kokp520/skills add <name> |
 | Help Menu | npx github:kokp520/skills help | bunx github:kokp520/skills help |
@@ -79,18 +64,8 @@ Once published or pushed to GitHub, you can execute these commands in any reposi
 
 ## How to Install the "br-creator" Skill (For Other Team Members)
 
-If other team members or collaborators want to install and use the `br-creator` (Jira Branch Manager) skill, they can choose between Global or Project-level installations.
+If other team members or collaborators want to install and use the `br-creator` (Jira Branch Manager) skill inside the project repository, they can perform a Project-level installation.
 
-### 1. Global Installation (Recommended for Personal General Use)
-This links the skill globally to the Agent system. Once installed, the `br-creator` skill will be available in any repository across the system.
-
-They can run this directly in their terminal without cloning the repository manually:
-```bash
-npx github:kokp520/skills link
-```
-*Note: This automatically creates symlinks for all skills inside the wadiolk repository to `~/.agents/skills/` and `~/.gemini/skills/`.*
-
-### 2. Project-Level Installation (Recommended for Team Git Repositories)
 This copies a static snapshot of the `br-creator` skill directly into the active project repository, allowing it to be committed and shared with the team in Git.
 
 In the root directory of the target project, they should run:

@@ -2,7 +2,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import os from 'os';
 import https from 'https';
 import { fileURLToPath } from 'url';
 
@@ -22,10 +21,6 @@ const __dirname = path.dirname(__filename);
 // Determine if we are in the project root
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const LOCAL_SKILLS_DIR = path.join(PROJECT_ROOT, 'skills');
-
-// Target system directories
-const AGENT_SKILLS_DIR = path.join(os.homedir(), '.agents', 'skills');
-const GEMINI_SKILLS_DIR = path.join(os.homedir(), '.gemini', 'skills');
 
 // Default GitHub fallback for wadiolk's official skills
 const DEFAULT_GITHUB_OWNER_REPO = 'kokp520/skills';
@@ -149,126 +144,10 @@ function handleCreate(name) {
   console.log(`${BLUE}[INFO] Path:${RESET} ${skillDir}`);
   console.log(`${BLUE}[INFO] File:${RESET} ${skillMdPath}`);
   console.log(`\nNow you can edit ${CYAN}${skillMdPath}${RESET} to write your skill logic.`);
-  console.log(`After editing, run ${BOLD}make link${RESET} to publish it to the Agent.`);
+  console.log(`After editing, you can validate it with ${BOLD}make validate${RESET} or install it using ${BOLD}make add name=${formattedName}${RESET}.`);
 }
 
-// 2. Link Command
-function handleLink() {
-  if (!fs.existsSync(LOCAL_SKILLS_DIR)) {
-    console.log(`${YELLOW}[WARN] Local skills directory does not exist. Creating...${RESET}`);
-    ensureDirSync(LOCAL_SKILLS_DIR);
-  }
-
-  const localSkills = fs.readdirSync(LOCAL_SKILLS_DIR).filter(file => {
-    const fullPath = path.join(LOCAL_SKILLS_DIR, file);
-    return fs.statSync(fullPath).isDirectory() && file !== 'template';
-  });
-
-  if (localSkills.length === 0) {
-    console.log(`${YELLOW}[INFO] No custom skills found. Run 'make new name=<name>' to create one first.${RESET}`);
-    return;
-  }
-
-  ensureDirSync(AGENT_SKILLS_DIR);
-  ensureDirSync(GEMINI_SKILLS_DIR);
-
-  console.log(`${BLUE}[INFO] Linking skills to Agent system directories...${RESET}`);
-  
-  let successCount = 0;
-  for (const skill of localSkills) {
-    const sourcePath = path.join(LOCAL_SKILLS_DIR, skill);
-    
-    const agentLinkPath = path.join(AGENT_SKILLS_DIR, skill);
-    const geminiLinkPath = path.join(GEMINI_SKILLS_DIR, skill);
-
-    const s1 = createSymlink(sourcePath, agentLinkPath);
-    const s2 = createSymlink(sourcePath, geminiLinkPath);
-
-    if (s1 || s2) {
-      console.log(`  [OK] Linked ${CYAN}${skill}${RESET}`);
-      successCount++;
-    }
-  }
-
-  // Auto-sync other global skills from ~/.agents/skills to ~/.gemini/skills
-  if (fs.existsSync(AGENT_SKILLS_DIR)) {
-    try {
-      const agentSkills = fs.readdirSync(AGENT_SKILLS_DIR).filter(file => {
-        const fullPath = path.join(AGENT_SKILLS_DIR, file);
-        return fs.statSync(fullPath).isDirectory();
-      });
-
-      let syncCount = 0;
-      for (const skill of agentSkills) {
-        const sourcePath = path.join(AGENT_SKILLS_DIR, skill);
-        const geminiLinkPath = path.join(GEMINI_SKILLS_DIR, skill);
-
-        if (!fs.existsSync(geminiLinkPath)) {
-          if (createSymlink(sourcePath, geminiLinkPath)) {
-            console.log(`  [SYNC] Linked global ${CYAN}${skill}${RESET} to .gemini`);
-            syncCount++;
-          }
-        }
-      }
-      if (syncCount > 0) {
-        console.log(`\n${BLUE}[INFO] Successfully synchronized ${syncCount} global skill(s) from .agents to .gemini${RESET}`);
-      }
-    } catch (err) {
-      console.error(`${RED}[ERROR] Failed to synchronize global skills:${RESET}`, err.message);
-    }
-  }
-
-  console.log(`\n${GREEN}[SUCCESS] Linked ${successCount} skills to the system.${RESET}`);
-  console.log(`Now you can use them directly in your Agent conversations.`);
-}
-
-// 3. Unlink Command
-function handleUnlink() {
-  if (!fs.existsSync(LOCAL_SKILLS_DIR)) {
-    console.log(`${YELLOW}[INFO] Local skills directory does not exist.${RESET}`);
-    return;
-  }
-
-  const localSkills = fs.readdirSync(LOCAL_SKILLS_DIR).filter(file => {
-    const fullPath = path.join(LOCAL_SKILLS_DIR, file);
-    return fs.statSync(fullPath).isDirectory();
-  });
-
-  console.log(`${YELLOW}[INFO] Removing skill symbolic links from the system...${RESET}`);
-
-  let removedCount = 0;
-  const unlinkSymlink = (linkPath) => {
-    if (fs.existsSync(linkPath)) {
-      try {
-        const lstat = fs.lstatSync(linkPath);
-        if (lstat.isSymbolicLink()) {
-          fs.unlinkSync(linkPath);
-          return true;
-        }
-      } catch (err) {
-        console.error(`${RED}[ERROR] Failed to remove symlink: ${linkPath}${RESET}`, err.message);
-      }
-    }
-    return false;
-  };
-
-  for (const skill of localSkills) {
-    const agentLinkPath = path.join(AGENT_SKILLS_DIR, skill);
-    const geminiLinkPath = path.join(GEMINI_SKILLS_DIR, skill);
-
-    const u1 = unlinkSymlink(agentLinkPath);
-    const u2 = unlinkSymlink(geminiLinkPath);
-
-    if (u1 || u2) {
-      console.log(`  [OK] Removed ${CYAN}${skill}${RESET}`);
-      removedCount++;
-    }
-  }
-
-  console.log(`\n${GREEN}[SUCCESS] Unloaded ${removedCount} skills.${RESET}`);
-}
-
-// 4. List Command
+// 2. List Command
 function handleList() {
   console.log(`\n${BOLD}Wadiolk Skills List${RESET}`);
   console.log(`=================================`);
@@ -291,34 +170,10 @@ function handleList() {
   } else {
     console.log(`  (Directory not yet created)`);
   }
-
-  // Active Symlinks
-  console.log(`\n${BLUE}[Active Symlinks] (~/.agents/skills):${RESET}`);
-  if (fs.existsSync(AGENT_SKILLS_DIR)) {
-    const activeSkills = fs.readdirSync(AGENT_SKILLS_DIR).filter(file => {
-      const fullPath = path.join(AGENT_SKILLS_DIR, file);
-      try {
-        return fs.lstatSync(fullPath).isSymbolicLink();
-      } catch {
-        return false;
-      }
-    });
-
-    if (activeSkills.length === 0) {
-      console.log(`  (No custom symbolic links found)`);
-    } else {
-      activeSkills.forEach(skill => {
-        const target = fs.readlinkSync(path.join(AGENT_SKILLS_DIR, skill));
-        console.log(`  - ${GREEN}${skill}${RESET} -> ${target}`);
-      });
-    }
-  } else {
-    console.log(`  (System directory not yet created)`);
-  }
   console.log();
 }
 
-// 5. Validate Command
+// 3. Validate Command
 function handleValidate() {
   if (!fs.existsSync(LOCAL_SKILLS_DIR)) {
     console.log(`${YELLOW}[WARN] Local skills directory does not exist.${RESET}`);
@@ -391,7 +246,7 @@ function handleValidate() {
   }
 }
 
-// 6. Add Command (Asynchronous remote and local resolver)
+// 4. Add Command (Asynchronous remote and local resolver)
 async function handleAdd(inputPath) {
   if (!inputPath) {
     console.error(`${RED}[ERROR] Please specify a skill name or GitHub path to install.${RESET}\nUsage Examples:\n  wadiolk add br-creator (Local fallback)\n  wadiolk add username/repo/skills/some-skill (Remote GitHub)`);
@@ -470,7 +325,7 @@ async function handleAdd(inputPath) {
   }
 }
 
-// 7. Help
+// 5. Help
 function handleHelp() {
   console.log(`
 ${BOLD}${MAGENTA}Wadiolk - Custom Skills Developer Kit${RESET}
@@ -480,18 +335,12 @@ ${BOLD}Usage:${RESET}
 
 ${BOLD}Commands:${RESET}
   ${GREEN}create <name>${RESET}   Create a new custom skill template in local directory
-  ${GREEN}link${RESET}            Symlink all local skills to the Agent's system directory
-  ${GREEN}unlink${RESET}          Remove all Wadiolk symlinks from the system directory
-  ${GREEN}list${RESET}            Display the list of local and linked custom skills
+  ${GREEN}list${RESET}            Display the list of local custom skills
   ${GREEN}validate${RESET}        Validate the format of local skills (Frontmatter checks)
   ${GREEN}add <path>${RESET}      Install specified skill into current project's .gemini/skills/ directory
                   Supports local name: "br-creator"
                   Supports remote GitHub: "username/repo/skills/skill-name"
   ${GREEN}help${RESET}            Display this help message
-
-${BOLD}System Paths:${RESET}
-  - Agent Skills:  ${CYAN}${AGENT_SKILLS_DIR}${RESET}
-  - Gemini Skills: ${CYAN}${GEMINI_SKILLS_DIR}${RESET}
 `);
 }
 
@@ -500,12 +349,6 @@ ${BOLD}System Paths:${RESET}
   switch (COMMAND) {
     case 'create':
       handleCreate(ARGS[1]);
-      break;
-    case 'link':
-      handleLink();
-      break;
-    case 'unlink':
-      handleUnlink();
       break;
     case 'list':
       handleList();
