@@ -51,30 +51,46 @@ make list
 
 ## Cross-Project Distribution via npx / bunx
 
-Once published or pushed to GitHub, you can execute these commands in any repository:
+Once published to NPM or configured with local registry, you can execute these commands in any repository:
 
 | Action | NPM command (npx) | Bun command (bunx) |
 | :--- | :--- | :--- |
-| List Skills | npx github:kokp520/skills list | bunx github:kokp520/skills list |
-| Validate Format | npx github:kokp520/skills validate | bunx github:kokp520/skills validate |
-| Add to Project | npx github:kokp520/skills add <name> | bunx github:kokp520/skills add <name> |
-| Help Menu | npx github:kokp520/skills help | bunx github:kokp520/skills help |
+| List Skills | npx skills list | bunx skills list |
+| Validate Format | npx skills validate | bunx skills validate |
+| Add to Project | npx skills add <name> | bunx skills add <name> |
+| Help Menu | npx skills help | bunx skills help |
+
+*Note: If the package is not yet published or installed globally, you can fallback to using the remote GitHub resolver:*
+* `npx github:kokp520/skills <command>`
 
 ---
 
-## How to Install the "br-creator" Skill (For Other Team Members)
+## Available Skills
 
-If other team members or collaborators want to install and use the `br-creator` (Jira Branch Manager) skill inside the project repository, they can perform a Project-level installation.
+Here are the custom skills currently available in this developer kit:
 
-This copies a static snapshot of the `br-creator` skill directly into the active project repository, allowing it to be committed and shared with the team in Git.
+- **[br-creator](./skills/br-creator/SKILL.md)**: Interactive Jira Git Branch Creator. Fetches a Jira ticket summary via `mcp-atlassian`, generates a semantic kebab-case branch name (max 4 words), prompts the user via an interactive `agy` UI modal, and safely prepares/creates the branch locally.
+- **[pr-critic](./skills/pr-critic/SKILL.md)**: Pull Request code critic and reviewer. Inspects GitHub PR diffs using the `gh` CLI, evaluates reasoning/feasibility, refines code locally through user feedback, and generates Conventional Commit messages.
 
-In the root directory of the target project, they should run:
+---
+
+## How to Install Skills (For Other Team Members)
+
+If other team members or collaborators want to use these skills inside their project repositories, they can perform a Project-level installation.
+
+This copies a static snapshot of the specified skill directly into the active project repository's `.gemini/skills/` folder, allowing it to be committed and shared with the team via Git.
+
+In the root directory of the target project, run:
+```bash
+npx skills add <skill-name>
+```
+
+For example, to install the **br-creator** skill:
+```bash
+npx skills add br-creator
+```
+
+*Note: If the `skills` package is not yet published or installed globally on their system, team members can alternatively use the remote GitHub repository directly:*
 ```bash
 npx github:kokp520/skills add br-creator
-```
-*Note: Thanks to our built-in remote resolver, if "br-creator" is not found on their local machine, our CLI automatically downlinks the latest version from your GitHub repository (kokp520/skills) and copies it to `.gemini/skills/br-creator`. Once copied, commit the newly added files to the project repository's Git.*
-
-They can also explicitly download a skill from any other public GitHub repository by using:
-```bash
-npx github:kokp520/skills add github-username/repo-name/skills/skill-name
 ```
