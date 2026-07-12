@@ -76,3 +76,25 @@ Once published or pushed to GitHub, you can execute these commands in any reposi
 | Help Menu | npx github:username/wadiolk help | bunx github:username/wadiolk help |
 
 Replace `username/wadiolk` with your actual GitHub username and repository name.
+
+## How to Install the "br-creator" Skill (For Other Team Members)
+
+If other team members or collaborators want to install and use the `br-creator` (Jira Branch Manager) skill, they can choose between Global or Project-level installations.
+
+### 1. Global Installation (Recommended for Personal General Use)
+This links the skill globally to the Agent system. Once installed, the `br-creator` skill will be available in any repository across the system.
+
+They can run this directly in their terminal without cloning the repository manually:
+```bash
+npx github:username/wadiolk link
+```
+*Note: This automatically creates symlinks for all skills inside the wadiolk repository to `~/.agent/skills/` and `~/.gemini/skills/`.*
+
+### 2. Project-Level Installation (Recommended for Team Git Repositories)
+This copies a static snapshot of the `br-creator` skill directly into the active project repository, allowing it to be committed and shared with the team in Git.
+
+In the root directory of the target project, they should run:
+```bash
+npx github:username/wadiolk add br-creator
+```
+*Note: This copies the folder into `.gemini/skills/br-creator`. Once copied, commit the newly added files to the project repository's Git.*
