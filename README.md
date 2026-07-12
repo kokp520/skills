@@ -97,4 +97,9 @@ In the root directory of the target project, they should run:
 ```bash
 npx github:username/wadiolk add br-creator
 ```
-*Note: This copies the folder into `.gemini/skills/br-creator`. Once copied, commit the newly added files to the project repository's Git.*
+*Note: Thanks to our built-in remote resolver, if "br-creator" is not found on their local machine, our CLI automatically downlinks the latest version from your GitHub repository (username/wadiolk) and copies it to `.gemini/skills/br-creator`. Once copied, commit the newly added files to the project repository's Git.*
+
+They can also explicitly download a skill from any other public GitHub repository by using:
+```bash
+npx github:username/wadiolk add github-username/repo-name/skills/skill-name
+```
