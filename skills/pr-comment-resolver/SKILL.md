@@ -53,16 +53,19 @@ Automatically retrieve review comments from a GitHub Pull Request (PR), analyze 
 * Modify the local files directly using `replace_file_content` or `multi_replace_file_content` according to the user-approved plans.
 * Ensure that the modifications strictly follow the project's style guide and leave unrelated comments/logic completely untouched.
 * Run any available local compilation, linting, or test commands to validate the changes.
-* **Do NOT** run `git add`, `git commit`, or push changes. All modifications must remain unstaged for the user to review.
-* Completion Criterion: Approved fixes are applied and verified in the local workspace.
+* **Commit Options**: Ask the user if they would like to automatically commit the applied fixes (using a concise conventional commit) or if they prefer to commit manually first. Committing the changes allows the agent to retrieve the commit SHA and reference it in the reply. If they prefer to keep it unstaged, do not commit.
+* Completion Criterion: Approved fixes are applied, verified, and optionally committed.
 
 ### 6. Draft & Confirm Review Comment Replies
 * For each successfully resolved comment:
-  * Draft a professional and clear reply message for the reviewer (e.g., "Thanks for the feedback! I have applied the fix as suggested.").
+  * Draft an **extremely concise** reply message for the reviewer.
+    * If a fix was applied and a commit exists, include the short commit SHA (e.g., "Fixed in `abc1234`" or "Done in `abc1234`").
+    * If no commit SHA is available, keep it minimal (e.g., "Done" or "Fixed").
+    * Avoid long verbose explanations unless specifically requested or if clarification on a design choice is necessary.
   * Present the drafted replies to the user for confirmation.
   * Once the user approves the replies, post them directly to the PR comment thread on GitHub:
     ```bash
-    gh api -X POST repos/{owner}/{repo}/pulls/comments/{comment_id}/replies -f body="Your approved reply"
+    gh api -X POST repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies -f body="Your approved reply"
     ```
 * Completion Criterion: Replies to the resolved comments are approved and posted to GitHub.
 
