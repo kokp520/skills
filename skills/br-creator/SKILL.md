@@ -1,6 +1,7 @@
 ---
 name: br-creator
 description: Interactive Jira Git Branch Creator. Fetch a Jira ticket summary via mcp-atlassian, generate a kebab-case branch name (max 4 words), prompt the user with an interactive agy UI modal, checkout and pull master, and create the new branch locally.
+disable-model-invocation: true
 ---
 
 # Interactive Jira Git Branch Creator
