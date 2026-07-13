@@ -70,6 +70,7 @@ Once published to NPM or configured with local registry, you can execute these c
 Here are the custom skills currently available in this developer kit:
 
 - **[br-creator](./skills/br-creator/SKILL.md)**: Interactive Jira Git Branch Creator. Fetches a Jira ticket summary via `mcp-atlassian`, generates a semantic kebab-case branch name (max 4 words), prompts the user via an interactive `agy` UI modal, and safely prepares/creates the branch locally.
+- **[pr-comment-resolver](./skills/pr-comment-resolver/SKILL.md)**: Automatically fetch PR review comments from co-workers, evaluate their feedback, and apply correct fixes to local files in the workspace.
 - **[pr-critic](./skills/pr-critic/SKILL.md)**: Pull Request code critic and reviewer. Inspects GitHub PR diffs using the `gh` CLI, evaluates reasoning/feasibility, refines code locally through user feedback, and generates Conventional Commit messages.
 
 ---
