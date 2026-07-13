@@ -57,7 +57,7 @@ Once published to NPM or configured with local registry, you can execute these c
 | :--- | :--- | :--- |
 | List Skills | npx skills list | bunx skills list |
 | Validate Format | npx skills validate | bunx skills validate |
-| Add to Project | npx skills add <name> | bunx skills add <name> |
+| Add to Project | npx skills@latest add kokp520/skills/<name> | bunx skills add <name> |
 | Help Menu | npx skills help | bunx skills help |
 
 *Note: If the package is not yet published or installed globally, you can fallback to using the remote GitHub resolver:*
@@ -83,15 +83,10 @@ This copies a static snapshot of the specified skill directly into the active pr
 
 In the root directory of the target project, run:
 ```bash
-npx skills add <skill-name>
+npx skills@latest add kokp520/skills/<skill-name>
 ```
 
 For example, to install the **br-creator** skill:
 ```bash
-npx skills add br-creator
-```
-
-*Note: If the `skills` package is not yet published or installed globally on their system, team members can alternatively use the remote GitHub repository directly:*
-```bash
-npx github:kokp520/skills add br-creator
+npx skills@latest add kokp520/skills/br-creator
 ```
