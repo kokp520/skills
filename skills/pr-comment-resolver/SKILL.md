@@ -1,6 +1,7 @@
 ---
 name: pr-comment-resolver
 description: Automatically fetch PR review comments from co-workers, evaluate their feedback, interact with the user to confirm fixes, apply modifications, and reply to comments on GitHub.
+disable-model-invocation: true
 ---
 
 # PR Comment Resolver

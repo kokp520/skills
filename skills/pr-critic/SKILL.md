@@ -1,6 +1,7 @@
 ---
 name: pr-critic
 description: Inspect and review a GitHub PR URL using the gh CLI. Evaluate code changes for correctness, feasibility, and potential improvements, modify local files as requested, and suggest commit messages.
+disable-model-invocation: true
 ---
 
 # PR Critic
