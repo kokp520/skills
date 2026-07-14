@@ -50,25 +50,29 @@ Automatically retrieve review comments from a GitHub Pull Request (PR), analyze 
   * **Ask for Confirmation**: Stop and present the proposed fix to the user. Use the `ask_question` tool or an interactive prompt to let the user review and approve each fix.
 * Completion Criterion: The user has reviewed and approved the planned fixes.
 
-### 5. Apply Corrective Fixes Locally
+### 5. Apply Corrective Fixes Locally & Push (Optional)
 * Modify the local files directly using `replace_file_content` or `multi_replace_file_content` according to the user-approved plans.
 * Ensure that the modifications strictly follow the project's style guide and leave unrelated comments/logic completely untouched.
 * Run any available local compilation, linting, or test commands to validate the changes.
-* **Commit Options**: Ask the user if they would like to automatically commit the applied fixes (using a concise conventional commit) or if they prefer to commit manually first. Committing the changes allows the agent to retrieve the commit SHA and reference it in the reply. If they prefer to keep it unstaged, do not commit.
-* Completion Criterion: Approved fixes are applied, verified, and optionally committed.
+* **Commit & Push Options**: 
+  * Always ask the user if they would like to automatically commit and push the applied fixes.
+  * If they agree, execute `git commit -m "..."` and `git push` to retrieve the short commit SHA (e.g., `abc1234`) and the remote commit link (e.g., `https://github.com/{owner}/{repo}/commit/{sha}`).
+  * If they prefer to keep it unstaged or commit manually, skip this step, but explain that the reply won't contain a commit link.
+* Completion Criterion: Approved fixes are applied, verified, and optionally committed/pushed with a retrieved commit SHA/link.
 
 ### 6. Draft & Confirm Review Comment Replies
-* For each successfully resolved comment:
-  * Draft an **extremely concise** reply message for the reviewer.
-    * If a fix was applied and a commit exists, include the short commit SHA (e.g., "Fixed in `abc1234`" or "Done in `abc1234`").
-    * If no commit SHA is available, keep it minimal (e.g., "Done" or "Fixed").
-    * Avoid long verbose explanations unless specifically requested or if clarification on a design choice is necessary.
-  * Present the drafted replies to the user for confirmation.
-  * Once the user approves the replies, post them directly to the PR comment thread on GitHub:
-    ```bash
-    gh api -X POST repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies -f body="Your approved reply"
-    ```
-* Completion Criterion: Replies to the resolved comments are approved and posted to GitHub.
+* For each successfully resolved comment, draft a reply message.
+* **CRITICAL RULES FOR REPLIES**:
+  1. **Language**: The reply drafted for GitHub MUST be in **English**, regardless of any custom user rules requesting other languages for chat.
+  2. **Format**: Keep it **extremely concise**.
+     * If a commit exists, always include the short commit SHA and/or commit link. Example: `"Fixed in abc1234"`, `"Resolved in [abc1234](https://github.com/...)`".
+     * If no commit exists, keep it minimal. Example: `"Done"` or `"Fixed"`.
+  3. **Strict Confirmation**: **NEVER** post the reply directly to GitHub without user confirmation. You must first present the exact drafted English reply text (including any commit link/hash) to the user and explicitly ask: *"Is this reply content and format reasonable?"*.
+* Once the user explicitly approves the reply, post it to the PR comment thread on GitHub:
+  ```bash
+  gh api -X POST repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies -f body="Your approved English reply"
+  ```
+* Completion Criterion: Replies to the resolved comments are drafted in English, containing commit links, explicitly approved by the user, and successfully posted.
 
 ### 7. Synthesize Resolution Report
 * Present a structured markdown table summarizing the work completed:
