@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portal-Style Landing — UX Template</title>
+<!--
+  ============================================================================
+  portal-style-landing  ::  THEMEABLE UX TEMPLATE
+  ----------------------------------------------------------------------------
+  TWO LAYERS ARE SEPARATED ON PURPOSE:
+
+  [ART LAYER]   :root variables marked  ✦ ART ✦  -> colors, fonts, radius,
+                  shadow, spacing scale, illustration slots.
+                  >>> EDIT ONLY THESE TO RE-SKIN. <<<
+
+  [UX LAYER]    structural CSS (layout/grid/flex) + <script> filter/render.
+                  >>> DO NOT TOUCH WHEN SWAPPING ART. <<<
+                  This is the portable interaction logic (search + chip filter
+                  catalog, dual CTA, grid rhythm, theme-aware, anchor nav).
+  ============================================================================
+-->
+<style>
+  /* ======================= ✦ ART ✦ : THEME TOKENS ======================= */
+  :root {
+    /* swap these for your own brand — nothing else needs to change */
+    --bg:            #0a0a0a;   /* page background            */
+    --bg-elev:       #111111;   /* cards / raised surfaces    */
+    --fg:            #ededed;   /* primary text               */
+    --muted:         #a1a1a1;   /* secondary text             */
+    --border:        #262626;   /* hairline borders           */
+    --accent:        #3291ff;   /* primary action color       */
+    --accent-fg:     #ffffff;   /* text on accent             */
+    --accent-soft:   rgba(50,145,255,.12);
+    --font-sans:     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --radius:        12px;
+    --shadow:        0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.25);
+    --hero-art:      none;     /* url("your-hero.svg") or none */
+    /* ---- spacing scale (keep; part of UX rhythm) ---- */
+    --container:     80rem;
+    --gap:           1.25rem;
+    --section-pad:   5rem;
+  }
+  /* light mode auto-adapts from the same tokens */
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg:        #ffffff;
+      --bg-elev:   #fafafa;
+      --fg:        #111111;
+      --muted:     #666666;
+      --border:    #eaeaea;
+      --accent:    #0070f3;
+      --accent-fg: #ffffff;
+      --accent-soft: rgba(0,112,243,.10);
+      --shadow:    0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.06);
+    }
+  }
+
+  /* ======================= [UX LAYER] : STRUCTURE ======================= */
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--container); margin: 0 auto; padding: 0 1.5rem; }
+
+  /* nav */
+  header.nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(12px);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { font-weight: 700; letter-spacing: -.02em; }
+  .nav a { color: var(--muted); text-decoration: none; margin-left: 1.25rem; font-size: .95rem; }
+  .nav a:hover { color: var(--fg); }
+
+  /* hero */
+  .hero { padding: var(--section-pad) 0; text-align: center; }
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    line-height: 1.05; letter-spacing: -.03em; margin: 0 0 1rem;
+  }
+  .hero p.lead { color: var(--muted); font-size: 1.15rem; max-width: 38rem; margin: 0 auto 2rem; }
+  .hero-art {
+    height: 180px; margin: 2.5rem auto 0; max-width: 48rem;
+    background: var(--hero-art) center/contain no-repeat;
+    border: 1px dashed var(--border); border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center; color: var(--muted);
+  }
+
+  /* dual CTA */
+  .cta-row { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .7rem 1.25rem; border-radius: var(--radius);
+    font-weight: 600; font-size: .95rem; text-decoration: none; cursor: pointer;
+    border: 1px solid transparent; transition: transform .06s ease, background .15s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost { background: transparent; color: var(--fg); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--accent-soft); }
+
+  /* section heading */
+  section { padding: var(--section-pad) 0; border-top: 1px solid var(--border); }
+  .sec-head { text-align: center; margin-bottom: 2.5rem; }
+  .sec-head h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -.02em; margin: 0 0 .5rem; }
+  .sec-head p { color: var(--muted); margin: 0; }
+
+  /* grid rhythm — cards flex 1/2/3/4 cols by width */
+  .grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card {
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow);
+  }
+  .card h3 { margin: 0 0 .5rem; font-size: 1.1rem; }
+  .card p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .card .ico { font-size: 1.6rem; margin-bottom: .75rem; display: block; }
+
+  /* catalog — centerpiece interaction */
+  .catalog-tools { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.5rem; }
+  .search {
+    flex: 1 1 260px; min-width: 220px;
+    background: var(--bg-elev); border: 1px solid var(--border);
+    color: var(--fg); border-radius: var(--radius);
+    padding: .65rem .9rem; font-size: .95rem; font-family: var(--font-sans);
+  }
+  .search::placeholder { color: var(--muted); }
+  .chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .chip {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: .35rem .85rem; font-size: .85rem; cursor: pointer; transition: all .12s ease;
+  }
+  .chip:hover { color: var(--fg); }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+  .catalog-meta { color: var(--muted); font-size: .85rem; margin-bottom: 1rem; }
+  .catalog-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .item {
+    background: var(--bg-elev); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem 1.25rem; box-shadow: var(--shadow);
+  }
+  .item .top { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+  .item .name { font-weight: 600; }
+  .item .prov {
+    font-family: var(--font-mono); font-size: .72rem; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 999px; padding: .1rem .5rem; white-space: nowrap;
+  }
+  .item .price { font-family: var(--font-mono); font-size: .82rem; color: var(--accent); margin-top: .6rem; }
+  .item .note { color: var(--muted); font-size: .85rem; margin-top: .4rem; }
+  .empty { color: var(--muted); text-align: center; padding: 3rem 0; }
+
+  /* pricing */
+  .price-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .tier { text-align: center; }
+  .tier .amt { font-size: 2rem; font-weight: 700; letter-spacing: -.02em; margin: .5rem 0; }
+  .tier ul { list-style: none; padding: 0; margin: 1rem 0 1.5rem; color: var(--muted); font-size: .9rem; }
+  .tier li { padding: .3rem 0; }
+  .tier.feat { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+  footer { padding: var(--section-pad) 0 3rem; border-top: 1px solid var(--border); text-align: center; }
+  footer .cta-row { margin-bottom: 2rem; }
+  .foot-links a { color: var(--muted); text-decoration: none; margin: 0 .75rem; font-size: .9rem; }
+  .foot-links a:hover { color: var(--fg); }
+</style>
+</head>
+<body>
+
+<!-- ===================== NAV (single-page anchor) ===================== -->
+<header class="nav">
+  <div class="wrap">
+    <span class="brand">◆ YourBrand</span>
+    <nav>
+      <a href="#pillars">Features</a>
+      <a href="#surfaces">Surfaces</a>
+      <a href="#catalog">Catalog</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== HERO + DUAL CTA ===================== -->
+<section class="hero" style="border-top:none">
+  <div class="wrap">
+    <h1>Your product grows with you.</h1>
+    <p class="lead">One account, every option, the tools you need — bundled under a single subscription.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#">Create Account</a>
+      <a class="btn btn-ghost" href="#">Get the App</a>
+    </div>
+    <div class="hero-art">[ your hero illustration slot — set --hero-art ]</div>
+  </div>
+</section>
+
+<!-- ===================== 4 PILLARS ===================== -->
+<section id="pillars">
+  <div class="wrap">
+    <div class="sec-head"><h2>One subscription, everything included</h2><p>The four things you get the moment you sign in.</p></div>
+    <div class="grid">
+      <div class="card"><span class="ico">🔑</span><h3>One Account</h3><p>A single sign-in wires up everything. Setup takes one command or one click.</p></div>
+      <div class="card"><span class="ico">🧠</span><h3>Every Model</h3><p>Hundreds of models from every frontier lab. Switch with one command.</p></div>
+      <div class="card"><span class="ico">🧰</span><h3>Tools Included</h3><p>Hosted tools bundle with your plan and work the moment you sign in.</p></div>
+      <div class="card"><span class="ico">☁️</span><h3>Cloud Hosting</h3><p>Deploy in one click and run around the clock. Costs bill to your balance.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 3 SURFACES ===================== -->
+<section id="surfaces">
+  <div class="wrap">
+    <div class="sec-head"><h2>Choose your surface</h2><p>Runs as a desktop app, in the cloud, or in your terminal. One account powers all three.</p></div>
+    <div class="grid">
+      <div class="card"><span class="ico">🖥️</span><h3>Desktop</h3><p>Native app with a guided setup that configures everything to your preference.</p></div>
+      <div class="card"><span class="ico">☁️</span><h3>Cloud</h3><p>Hosted agent running 24/7. Server costs bill straight to your credit balance.</p></div>
+      <div class="card"><span class="ico">⌨️</span><h3>Terminal</h3><p>One command in your shell. Same account, same models, same tools.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CATALOG (centerpiece) ===================== -->
+<section id="catalog">
+  <div class="wrap">
+    <div class="sec-head"><h2>The catalog</h2><p>Search and filter the full list. Updates instantly — no reload.</p></div>
+
+    <div class="catalog-tools">
+      <input id="search" class="search" type="search" placeholder="Search by name or provider…" autocomplete="off" />
+      <div class="chips" id="chips"><!-- chips injected by JS --></div>
+    </div>
+    <div class="catalog-meta" id="meta"></div>
+    <div class="catalog-grid" id="grid"><!-- items injected by JS --></div>
+    <div class="empty" id="empty" hidden>No matches. Try a different term or filter.</div>
+  </div>
+</section>
+
+<!-- ===================== PRICING ===================== -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head"><h2>Simple, credit-based pricing</h2><p>One balance powers models and tools alike.</p></div>
+    <div class="grid price-grid">
+      <div class="card tier"><h3>Free</h3><div class="amt">$0</div><ul><li>Starter models</li><li>Community tools</li><li>1 surface</li></ul><a class="btn btn-ghost" href="#">Start free</a></div>
+      <div class="card tier feat"><h3>Pro</h3><div class="amt">$20/mo</div><ul><li>All frontier models</li><li>Every hosted tool</li><li>Cloud hosting</li></ul><a class="btn btn-primary" href="#">Go Pro</a></div>
+      <div class="card tier"><h3>Team</h3><div class="amt">Custom</div><ul><li>Shared balance</li><li>SSO &amp; audit</li><li>Priority routing</li></ul><a class="btn btn-ghost" href="#">Contact us</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER CTA ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#">Create Account</a>
+      <a class="btn btn-ghost" href="#">Get the App</a>
+    </div>
+    <div class="foot-links">
+      <a href="#pillars">Features</a><a href="#surfaces">Surfaces</a><a href="#catalog">Catalog</a><a href="#pricing">Pricing</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===================== [UX LAYER] : DATA-DRIVEN CATALOG =====================
+   The portable interaction logic. Keep this intact; only swap the DATA array
+   and re-skin via :root ART variables. Filtering = search ∩ chips, client-side. */
+
+// ---- SAMPLE DATA — replace with your real items (keep the field shape) ----
+const ITEMS = [
+  { name: "Claude Sonnet 4.5", provider: "Anthropic", category: "Frontier", priceIn: 2.40, priceOut: 12.00, note: "Best general-purpose agentic model." },
+  { name: "GPT-5.5 Pro",       provider: "OpenAI",    category: "Frontier", priceIn: 3.00, priceOut: 15.00, note: "Strong reasoning + tool calling." },
+  { name: "Gemini 3 Pro",      provider: "Google",    category: "Vision",   priceIn: 1.60, priceOut: 9.60,  note: "Huge context window." },
+  { name: "DeepSeek V4 Pro",   provider: "DeepSeek",  category: "Coding",   priceIn: 0.35, priceOut: 0.70,  note: "Cost-effective coder." },
+  { name: "Llama 4 Maverick",  provider: "Meta",      category: "Free",     priceIn: 0.16, priceOut: 0.64,  note: "Open-weight, free tier." },
+  { name: "Nova Pro 1.0",      provider: "Amazon",    category: "Frontier", priceIn: 0.64, priceOut: 2.56,  note: "Balanced multimodal." },
+  { name: "Codestral 2508",    provider: "Mistral",   category: "Coding",   priceIn: 0.24, priceOut: 0.72,  note: "Specialized code model." },
+  { name: "Gemma 4 31B",       provider: "Google",    category: "Free",     priceIn: 0.11, priceOut: 0.32,  note: "Small, fast, free." },
+  { name: "Seed 1.6 Flash",    provider: "ByteDance", category: "Vision",   priceIn: 0.06, priceOut: 0.24,  note: "Cheap vision + text." },
+  { name: "Command R+",        provider: "Cohere",    category: "Frontier", priceIn: 2.00, priceOut: 8.00,  note: "Enterprise RAG tuned." },
+];
+
+const grid   = document.getElementById("grid");
+const empty  = document.getElementById("empty");
+const meta   = document.getElementById("meta");
+const search = document.getElementById("search");
+const chipsEl = document.getElementById("chips");
+
+// derive category chips from data
+const CATS = ["All", ...Array.from(new Set(ITEMS.map(i => i.category)))];
+let activeCat = "All";
+
+CATS.forEach(cat => {
+  const b = document.createElement("button");
+  b.className = "chip";
+  b.textContent = cat;
+  b.setAttribute("aria-pressed", String(cat === activeCat));
+  b.addEventListener("click", () => {
+    activeCat = cat;
+    [...chipsEl.children].forEach(c => c.setAttribute("aria-pressed", String(c.textContent === cat)));
+    render();
+  });
+  chipsEl.appendChild(b);
+});
+
+function fmt(n) { return "$" + n.toFixed(2); }
+
+function render() {
+  const q = search.value.trim().toLowerCase();
+  const list = ITEMS.filter(i => {
+    const matchSearch = !q || (i.name + " " + i.provider).toLowerCase().includes(q);
+    const matchCat = activeCat === "All" || i.category === activeCat;
+    return matchSearch && matchCat;
+  });
+
+  grid.innerHTML = "";
+  list.forEach(i => {
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML =
+      '<div class="top"><span class="name"></span><span class="prov"></span></div>' +
+      '<div class="price">in ' + fmt(i.priceIn) + ' / out ' + fmt(i.priceOut) + ' per 1M tokens</div>' +
+      '<div class="note"></div>';
+    el.querySelector(".name").textContent = i.name;
+    el.querySelector(".prov").textContent = i.provider;
+    el.querySelector(".note").textContent = i.note;
+    grid.appendChild(el);
+  });
+
+  empty.hidden = list.length !== 0;
+  meta.textContent = list.length + " of " + ITEMS.length + " shown" +
+    (activeCat !== "All" ? " · " + activeCat : "") +
+    (q ? ' · "' + search.value + '"' : "");
+}
+
+search.addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
