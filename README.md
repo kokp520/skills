@@ -20,7 +20,9 @@ wadiolk/
 │   └── cli.js           # Core zero-dependency CLI executable
 └── skills/              # Your custom developer skills
     ├── br-creator/          # Interactive Jira git branch manager (local only)
-    └── production-UX-design/ # Portal-style UX pattern kit (themeable)
+    ├── frontend/             # Frontend / UX design skills
+    │   └── production-UX-design/ # Portal-style UX pattern kit (themeable)
+    └── br-creator/          # Interactive Jira git branch manager (local only)
 ```
 
 ## Quick Start (Makefile)
@@ -73,7 +75,7 @@ Here are the custom skills currently available in this developer kit:
 - **[br-creator](./skills/br-creator/SKILL.md)**: Interactive Jira Git Branch Creator. Fetches a Jira ticket summary via `mcp-atlassian`, generates a semantic kebab-case branch name (max 4 words), prompts the user via an interactive `agy` UI modal, and safely prepares/creates the branch locally.
 - **[pr-comment-resolver](./skills/pr-comment-resolver/SKILL.md)**: Automatically fetch PR review comments from co-workers, evaluate their feedback, and apply correct fixes to local files in the workspace.
 - **[pr-critic](./skills/pr-critic/SKILL.md)**: Pull Request code critic and reviewer. Inspects GitHub PR diffs using the `gh` CLI, evaluates reasoning/feasibility, refines code locally through user feedback, and generates Conventional Commit messages.
-- **[production-UX-design](./skills/production-UX-design/SKILL.md)**: Reusable portal-style UX/interaction design logic (Vercel-Geist style) for landing, pricing, and large filterable catalog pages — all visuals decoupled into CSS variables so you can re-skin freely without touching the information architecture.
+- **[production-UX-design](./skills/frontend/production-UX-design/SKILL.md)**: Reusable portal-style UX/interaction design logic (Vercel-Geist style) for landing, pricing, and large filterable catalog pages — all visuals decoupled into CSS variables so you can re-skin freely without touching the information architecture.
 
 ---
 
