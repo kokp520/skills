@@ -13,7 +13,7 @@ The root virtue of a skill is **process predictability** — wrangling determini
 
 ## 🎯 Trigger Conditions
 * When asked to "create a new skill", "write a skill", "review a skill", "audit a skill", or "refine skill language".
-* When reviewing existing `.md` files in `~/.agent/skills/` or `/Users/adiwu/.gemini/skills/`.
+* When reviewing existing `.md` files in `~/.agent/skills/` or `~/.gemini/skills/`.
 
 ---
 
@@ -21,7 +21,7 @@ The root virtue of a skill is **process predictability** — wrangling determini
 
 When authoring or refining skills, you **MUST** eliminate ambiguous prose and adopt the precise domain concepts, verbs, and anti-pattern definitions defined in the glossary.
 
-👉 **[View the Comprehensive Skill Lexicon](file:///Users/adiwu/.gemini/skills/skill-craftsman/GLOSSARY.md)**
+👉 **[View the Comprehensive Skill Lexicon](GLOSSARY.md)**
 
 Always refer to `GLOSSARY.md` for the exact definitions of terms like *Behavioral Contract*, *Context Load*, *Legwork*, *Premature Completion*, and *Router Skill*.
 
