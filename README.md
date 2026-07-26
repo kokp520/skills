@@ -13,7 +13,6 @@ Wadiolk is a zero-dependency CLI package built to bootstrap, validate, and manag
 ```text
 wadiolk/
 ├── CONTEXT.md           # Project rules (including the strict No-Emoji policy)
-├── Makefile             # CLI shortcut command wrappers
 ├── package.json         # Package definitions and binary mapping
 ├── README.md            # Brief documentation
 ├── src/
@@ -23,33 +22,6 @@ wadiolk/
     ├── frontend/             # Frontend / UX design skills
     │   └── production-UX-design/ # Portal-style UX pattern kit (themeable)
     └── br-creator/          # Interactive Jira git branch manager (local only)
-```
-
-## Quick Start (Makefile)
-
-Use the following Makefile commands within this repository to manage your skills:
-
-### 1. Create a New Skill
-```bash
-make new name=my-skill
-```
-Generates a new skill folder with an interactive SKILL.md template.
-
-### 2. Validate Frontmatter Schemas
-```bash
-make validate
-```
-Ensures all your local skills have valid YAML Frontmatter blocks (e.g., name and description).
-
-### 3. Install Skill Snapshot to Current Project
-```bash
-make add name=my-skill
-```
-Copies the specified skill into your current working directory's .gemini/skills/ folder.
-
-### 4. List Active Status
-```bash
-make list
 ```
 
 ## Cross-Project Distribution via npx / bunx
