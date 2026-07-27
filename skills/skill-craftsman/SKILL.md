@@ -11,21 +11,21 @@ The root virtue of a skill is **process predictability** — wrangling determini
 
 ---
 
-## 🎯 Trigger Conditions
+## Trigger Conditions
 * When asked to "create a new skill", "write a skill", "review a skill", "audit a skill", or "refine skill language".
 * When reviewing existing `.md` files in `~/.agent/skills/` or `~/.gemini/skills/`.
 
 ---
 
-## 📚 Lexicon & Leading Words (Context Pointer)
+## Lexicon & Leading Words (Context Pointer)
 
 When authoring or refining skills, you **MUST** eliminate ambiguous prose and adopt the precise domain concepts, verbs, and anti-pattern definitions defined in the glossary.
 
-👉 **[View the Comprehensive Skill Lexicon](GLOSSARY.md)**
+**[View the Comprehensive Skill Lexicon](GLOSSARY.md)**
 
 Always refer to `GLOSSARY.md` for the exact definitions of terms like *Behavioral Contract*, *Context Load*, *Legwork*, *Premature Completion*, and *Router Skill*.
 
-## 📐 Core Design Mechanics
+## Core Design Mechanics
 
 ### 1. Invocation Mechanics & Trade-offs
 - **Model-Invoked Skill**: Omit `disable-model-invocation`. Front-load description with distinct **Trigger Branches**. Incurs **Context Load** every turn.
@@ -42,7 +42,7 @@ Anchor complex behavior using pretrained conceptual shortcuts (e.g., *tight*, *r
 
 ---
 
-## 🚨 Anti-Pattern Diagnostics (Failure Modes)
+## Anti-Pattern Diagnostics (Failure Modes)
 
 When auditing skills, actively identify and eliminate failure modes such as **Premature Completion**, **Duplication**, **Sediment**, **Sprawl**, **No-ops**, and **Negation**. 
 
@@ -50,7 +50,7 @@ When auditing skills, actively identify and eliminate failure modes such as **Pr
 
 ---
 
-## 🛠️ Skill Audit Workflow
+## Skill Audit Workflow
 
 When auditing or refining a skill:
 
@@ -62,9 +62,8 @@ When auditing or refining a skill:
 
 ---
 
-## 🔍 Validation Checklist
+## Validation Checklist
 - [ ] Frontmatter explicitly tuned for Context vs. Cognitive load?
 - [ ] Every step terminates on a checkable **Completion Criterion**?
 - [ ] Free of Sediment, Sprawl, No-ops, and Negation?
 - [ ] Replaced generic verbs with precise domain terms?
-
