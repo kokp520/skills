@@ -2,18 +2,6 @@
 
 It's inspired by Mattpocock skills workflow, if you have any suggestions, welcome to open a pull request.
 
-## npx / bunx
-
-| Action | NPM command (npx) | Bun command (bunx) |
-| :--- | :--- | :--- |
-| List Skills | npx skills list | bunx skills list |
-| Validate Format | npx skills validate | bunx skills validate |
-| Add to Project | npx skills@latest add kokp520/skills/<name> | bunx skills add <name> |
-| Help Menu | npx skills help | bunx skills help |
-
-*Note: If the package is not yet published or installed globally, you can fallback to using the remote GitHub resolver:*
-* `npx github:kokp520/skills <command>`
-
 ---
 
 ## Install
