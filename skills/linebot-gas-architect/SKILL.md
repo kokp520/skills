@@ -14,8 +14,11 @@ This skill governs how agents analyze, develop, refactor, and test LINE Bots hos
 - **Webhook Entry Point**: All incoming LINE Webhook events arrive at `doPost(e)`.
 - **Event Parsing & Dispatch Loop**: Ingest `e.postData.contents`, parse JSON `events`, and iterate to dispatch handlers based on `event.type` (`message`, `follow`, `unfollow`, `postback`, `join`, `leave`).
 - **HTTP Transport**: Enforce native `UrlFetchApp.fetch(url, options)`. Do NOT import or use browser/Node `fetch` or `axios`.
-- **Secret & Config Isolation**: Access sensitive tokens (`CHANNEL_ACCESS_TOKEN`, `CHANNEL_SECRET`) exclusively via `PropertiesService.getScriptProperties()`. Never hardcode secrets.
-- **State & Caching Layer**: Utilize `CacheService.getScriptCache()` for ephemeral session state (up to 6 hours) and `PropertiesService` or external storage (Google Sheets/Firestore) for persistent records.
+- **Secret & Config Isolation**: Access sensitive tokens (`CHANNEL_ACCESS_TOKEN`, `CHANNEL_SECRET`) exclusively via `PropertiesService.getScriptProperties()`. Never hardcode secrets in source code files.
+- **Git Secret Prevention**: Ensure `.clasp.json` and local source files contain no plain-text access tokens or API keys before committing to version control.
+- **Modular Architecture Breakdown**: Divide monolithic GAS scripts into dedicated, single-responsibility files (e.g., `main.js`, `lineApi.js`, `sheetService.js`, and domain-specific handlers like `orderHandler.js`, `memoHandler.js`, `listHandler.js`).
+- **Flex Message Presentation**: Prefer sending structured, visual LINE Flex Messages over plain text for menus, help commands, and status dashboards.
+- **Generic Open-Source Compliance**: Ensure all skill references, templates, and code examples remain completely agnostic and free of user-specific identities or hardcoded values.
 
 ---
 
@@ -46,4 +49,13 @@ Construct or execute a local/GAS mock event harness (e.g., `testDoPostTextMessag
 ### Step 4: Apply Mutations & Prune Legacy Sediment
 Apply code modifications to GAS source files, ensure non-negotiable guardrails are respected, and prune unused legacy logic.
 - *Completion Criterion*: Target changes are written, syntax is verified, and code adheres strictly to GAS-native API patterns (`UrlFetchApp`, `PropertiesService`).
+
+### Step 5: Interactive Clasp Push & Deployment Confirmation
+Local code modifications and Git commits DO NOT automatically update the remote Google Apps Script environment.
+- **Explicit Confirmation Prompt**: Always ask the user before executing `clasp push` or `clasp deploy`.
+- **Synchronization Flow**:
+  1. Ask the user via `ask_question` / prompt: *"Would you like to sync (clasp push) these updated files to Google Apps Script now?"*
+  2. If approved, execute `npx @google/clasp push`.
+  3. Ask the user: *"Would you like to create a new deployment (clasp deploy) for Webhook production updates?"*
+  4. If approved, execute `npx @google/clasp deploy --description "..."`.
 
