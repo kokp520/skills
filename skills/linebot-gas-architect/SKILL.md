@@ -18,6 +18,8 @@ This skill governs how agents analyze, develop, refactor, and test LINE Bots hos
 - **Git Secret Prevention**: Ensure `.clasp.json` and local source files contain no plain-text access tokens or API keys before committing to version control.
 - **Modular Architecture Breakdown**: Divide monolithic GAS scripts into dedicated, single-responsibility files (e.g., `main.js`, `lineApi.js`, `sheetService.js`, and domain-specific handlers like `orderHandler.js`, `memoHandler.js`, `listHandler.js`).
 - **Flex Message Presentation**: Prefer sending structured, visual LINE Flex Messages over plain text for menus, help commands, and status dashboards.
+- **TDD Workflow & Test Harness**: Always maintain a dedicated `testRunner.js` test file containing mock Webhook payloads (`mockWebhookEvent`) and assertions (`assert`) to run tests locally in GAS before deploying to production.
+- **Robust API Response Logging**: Log explicit error responses and HTTP status codes for `UrlFetchApp.fetch` to ensure instant diagnosis when LINE Messaging API returns non-200 responses.
 - **Generic Open-Source Compliance**: Ensure all skill references, templates, and code examples remain completely agnostic and free of user-specific identities or hardcoded values.
 
 ---
