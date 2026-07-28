@@ -58,6 +58,6 @@ Local code modifications and Git commits DO NOT automatically update the remote 
 - **Synchronization Flow**:
   1. Ask the user via `ask_question` / prompt: *"Would you like to sync (clasp push) these updated files to Google Apps Script now?"*
   2. If approved, execute `npx @google/clasp push`.
-  3. Ask the user: *"Would you like to create a new deployment (clasp deploy) for Webhook production updates?"*
-  4. If approved, execute `npx @google/clasp deploy --description "..."`.
+  3. Ask the user: *"Would you like to update the existing production deployment (using -i <deploymentId>) so the Webhook URL remains unchanged?"*
+  4. If approved, execute `npx @google/clasp deploy -i <deploymentId> --description "..."` instead of generating new deployment IDs.
 
