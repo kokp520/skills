@@ -45,13 +45,13 @@ Automatically retrieve review comments from a GitHub Pull Request (PR), analyze 
 
 ### 4. Evaluate Feedback & Confirm with User
 * For each active review comment:
-  * Read the target file path (`path`) and surrounding lines using `view_file` to build a complete view of the context.
+  * Read the target file path (`path`) and surrounding lines to build a complete view of the context.
   * Evaluate the co-worker's feedback and draft a proposed local code modification.
-  * **Ask for Confirmation**: Stop and present the proposed fix to the user. Use the `ask_question` tool or an interactive prompt to let the user review and approve each fix.
+  * **Ask for Confirmation**: Stop and present the proposed fix to the user. Prompt the user for explicit confirmation to let them review and approve each fix.
 * Completion Criterion: The user has reviewed and approved the planned fixes.
 
 ### 5. Apply Corrective Fixes Locally & Push (Optional)
-* Modify the local files directly using `replace_file_content` or `multi_replace_file_content` according to the user-approved plans.
+* Modify the local files directly according to the user-approved plans.
 * Ensure that the modifications strictly follow the project's style guide and leave unrelated comments/logic completely untouched.
 * Run any available local compilation, linting, or test commands to validate the changes.
 * **Commit & Push Options**: 

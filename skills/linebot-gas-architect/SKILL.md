@@ -59,7 +59,7 @@ Apply code modifications to GAS source files, ensure non-negotiable guardrails a
 Local code modifications and Git commits DO NOT automatically update the remote Google Apps Script environment.
 - **Explicit Confirmation Prompt**: Always ask the user before executing `clasp push` or `clasp deploy`.
 - **Synchronization Flow**:
-  1. Ask the user via `ask_question` / prompt: *"Would you like to sync (clasp push) these updated files to Google Apps Script now?"*
+  1. Prompt the user for explicit confirmation: *"Would you like to sync (clasp push) these updated files to Google Apps Script now?"*
   2. If approved, execute `npx @google/clasp push`.
   3. Check `CONTEXT.md` for the Production Deployment ID. Ask the user: *"Would you like to update the existing production deployment (using -i <deploymentId>) so the Webhook URL remains unchanged?"*
   4. If approved, execute `npx @google/clasp deploy -i <deploymentId> --description "..."` instead of generating new deployment IDs.

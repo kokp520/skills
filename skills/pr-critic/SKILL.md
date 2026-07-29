@@ -16,7 +16,7 @@ Analyze a GitHub Pull Request (PR) by downloading its diff using the GitHub CLI 
 
 ### 1. Extract or Request PR URL
 * Parse the user's prompt for a GitHub Pull Request URL (matching pattern `github.com/owner/repo/pull/num`).
-* If no URL is found, ask the user to provide it. You can use the `ask_question` tool or a direct text prompt to retrieve the link.
+* If no URL is found, ask the user to provide it directly.
 * Completion Criterion: A valid GitHub PR URL is identified.
 
 ### 2. Verify and Bootstrap gh CLI Environment
@@ -50,7 +50,7 @@ Analyze a GitHub Pull Request (PR) by downloading its diff using the GitHub CLI 
 * Collaborate with the user to iterate on the solutions.
 * If the user agrees on making local code adjustments based on your PR review:
   * Locate the corresponding files in your local workspace.
-  * Apply modifications to the local files directly using file-editing tools (such as `replace_file_content` or `multi_replace_file_content`).
+  * Apply modifications to local files directly according to agreed specifications.
   * Always run validations (like tests or compilation checks) if available after making edits.
 * Do NOT run `git add` or `git commit`. Keep the modifications unstaged for the user to review.
 * Completion Criterion: The agreed-upon code changes are written locally and validated.

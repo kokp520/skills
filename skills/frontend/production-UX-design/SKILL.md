@@ -40,18 +40,35 @@ isolated in CSS variables so you can swap it without touching structure.
 
 ## Decoupling art from UX (the core rule)
 In `templates/index.html` two layers are separated:
-- **ART layer** = CSS variables in `:root` (colors, fonts, radius, shadow, spacing
-  scale, illustration/image slots). Edit ONLY these to re-skin.
-- **UX layer** = structural CSS (layout/grid/flex) + JS (filter/render). Do NOT
-  change these when swapping art — that is what keeps the interaction logic reusable.
+- **ART layer** = CSS variables in `:root` (colors, fonts, radius, shadow, spacing scale, illustration/image slots). Edit ONLY these to re-skin.
+- **UX layer** = structural CSS (layout/grid/flex) + JS (filter/render). Do NOT change these when swapping art — that is what keeps the interaction logic reusable.
 
-## How to apply
-1. Copy `templates/index.html` into your project.
-2. Replace the sample catalog array with your real data (keep the field shape:
-   `name, provider, category, priceIn, priceOut, note`).
-3. Re-skin via the `:root` ART variables (or add a `[data-theme="x"]` block).
-4. Swap the hero illustration / icon slots for your own art.
-5. Keep the filter/render JS intact — that is the portable UX.
+---
+
+## Ordered Execution Workflow
+
+### Step 1: Copy Template Baseline
+Copy `templates/index.html` into your target project workspace directory.
+- *Completion Criterion*: `index.html` exists in the target directory with intact structural markup and CSS variables.
+
+### Step 2: Inject Data Catalog Array
+Replace the sample dataset with your project's domain items while preserving required fields (`name`, `provider`, `category`, `priceIn`, `priceOut`, `note`).
+- *Completion Criterion*: Data catalog array is populated with valid JSON/JS objects without syntax errors.
+
+### Step 3: Re-skin via ART Tokens
+Update `:root` CSS variables (color palette, typography stack, border radius) to apply the custom theme without touching structural layout rules.
+- *Completion Criterion*: `:root` CSS variables reflect target branding and dark/light mode responsiveness.
+
+### Step 4: Asset & Icon Slot Replacement
+Replace hero SVG illustrations and feature card icon placeholders with project-specific assets.
+- *Completion Criterion*: Placeholder images/icons are swapped with valid local or hosted asset paths.
+
+### Step 5: Filter & Render Verification
+Verify client-side search matching and filter chip composability in the active browser or runtime.
+- *Completion Criterion*: Catalog renders, searches, and filters without page reloads or runtime JS errors.
+
+---
 
 ## Files
 - `templates/index.html` — complete, working, themeable single-page implementation.
+
