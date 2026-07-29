@@ -3,7 +3,7 @@
 When authoring or refining skills, eliminate ambiguous prose and adopt these **categorized leading words & domain concepts**.
 
 ## 1. Strategic Domain Concepts & Mental Models
-| Generic / Vague Term | Matt Pocock Lexicon | Definition & Intended Function |
+| Generic / Vague Term | Domain Lexicon | Definition & Intended Function |
 | :--- | :--- | :--- |
 | *System prompt / Instructions* | **Behavioral Contract** | An explicit specification binding the agent's execution model and process. |
 | *Randomness / Hallucination* | **Stochastic System** | The underlying non-deterministic engine that the skill aims to constrain. |

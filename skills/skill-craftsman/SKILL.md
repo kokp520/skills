@@ -1,78 +1,80 @@
 ---
 name: skill-craftsman
-description: Reference and reviewer for crafting, refining, and auditing high-quality AI agent skills. Integrates Matt Pocock's skill design principles, leading words, anti-pattern diagnostics, and precise domain vocabulary.
+description: Reference and reviewer for crafting, refining, and auditing high-quality AI agent skills. Enforces process predictability, leading words, zero-noise output contracts, and anti-pattern diagnostics.
 ---
 
-# Skill Craftsman (Great Skill Guidelines & Reviewer)
+# Skill Craftsman
 
-This skill provides the architectural principles, precise vocabulary, and auditing workflow for designing, writing, and reviewing AI agent skills. 
+Provides architectural principles, domain vocabulary, and auditing workflows for designing and reviewing AI agent skills.
 
-The root virtue of a skill is **process predictability** — wrangling determinism out of a stochastic system by enforcing a consistent behavioral contract, robust completion criteria, and precise domain language.
+Root virtue: **process predictability** — enforcing consistent behavioral contracts, completion criteria, and precise domain lexicon.
 
 ---
 
 ## Trigger Conditions
-* When asked to "create a new skill", "write a skill", "review a skill", "audit a skill", or "refine skill language".
-* When reviewing existing `.md` files in `~/.agent/skills/` or `~/.gemini/skills/`.
+* "create a skill", "write a skill", "review a skill", "audit a skill", "refine skill language".
+* Reviewing `.md` files in `~/.agent/skills/` or `~/.gemini/skills/`.
 
 ---
 
-## Lexicon & Leading Words (Context Pointer)
+## Domain Lexicon (Context Pointer)
 
-When authoring or refining skills, you **MUST** eliminate ambiguous prose and adopt the precise domain concepts, verbs, and anti-pattern definitions defined in the glossary.
+Eliminate ambiguous prose and use precise domain concepts, verbs, and anti-pattern definitions.
 
-**[View the Comprehensive Skill Lexicon](GLOSSARY.md)**
+**[View Skill Lexicon](GLOSSARY.md)**
 
-Always refer to `GLOSSARY.md` for the exact definitions of terms like *Behavioral Contract*, *Context Load*, *Legwork*, *Premature Completion*, and *Router Skill*.
+Refer to `GLOSSARY.md` for exact definitions of terms like *Behavioral Contract*, *Context Load*, *Legwork*, *Premature Completion*, and *Router Skill*.
 
-## Core Design Mechanics
+---
 
-### 1. Invocation Mechanics & Trade-offs
-- **Model-Invoked Skill**: Omit `disable-model-invocation`. Front-load description with distinct **Trigger Branches**. Incurs **Context Load** every turn.
-- **User-Invoked Skill**: Set `disable-model-invocation: true`. Strips description from agent index. Pays **Zero Context Load**, but incurs **Cognitive Load** on the user.
-- **Router Skill**: A single user-invoked skill that routes to other user-invoked skills when cognitive load gets too high.
+## Core Mechanics
 
-### 2. Information Hierarchy & Progressive Disclosure
-1. **In-skill Steps**: Ordered execution sequence in `SKILL.md`. Each step MUST terminate on a checkable **Completion Criterion**.
-2. **In-skill Reference**: Rules and definitions listed under clear, co-located headings.
-3. **External Reference**: Pushed behind a **Context Pointer** (e.g., `references/` or `GLOSSARY.md`) to keep `SKILL.md` lean.
+### 1. Invocation Mechanics
+- **Model-Invoked**: Omit `disable-model-invocation`. Front-load description with distinct **Trigger Branches**. Incurs **Context Load** every turn.
+- **User-Invoked**: Set `disable-model-invocation: true`. Zero Context Load, but incurs **Cognitive Load** on user.
+- **Router Skill**: User-invoked meta-skill routing to sub-skills.
 
-### 3. Leading Words (Token Compression)
-Anchor complex behavior using pretrained conceptual shortcuts (e.g., *tight*, *red*, *legwork*). A single strong **leading word** can collapse multi-sentence instructions into a single high-signal token.
+### 2. Information Hierarchy
+1. **In-skill Steps**: Sequence in `SKILL.md`. Each step terminates on a **Completion Criterion**.
+2. **In-skill Reference**: Rules co-located under clear headings.
+3. **External Reference**: Pushed behind a **Context Pointer** (`GLOSSARY.md`, `references/`).
+
+### 3. Leading Words & Implicit Tooling
+- **Leading Words**: Anchor complex behaviors with pretrained conceptual shortcuts (e.g., *tight*, *red*, *legwork*).
+- **Implicit Tooling**: Do NOT over-specify exact system tool names (e.g., write "Read file" instead of "Use `view_file`"). The agent inherently maps intent to available tools.
 
 ### 4. High-Signal / Zero-Noise Output Contract
-Skills MUST enforce maximum signal-to-noise ratio in output responses. Eliminate preamble, conversational filler, greetings, and redundant summaries:
-- **Bullet-Point Explanations**: ALWAYS explain, report, or summarize any finding, result, or concept using strict bullet points (`-` or `*`). Never output continuous prose paragraphs.
-- **No-Op / No Action Required**: If target code or skill is already optimal, emit minimal confirmation status (e.g., `Clean. No action needed.` or `Optimal. Ready.`).
-- **Action Completed**: Output only direct, high-value execution summaries without echoing full diffs or restating obvious step-by-step logic.
-- **Non-Noise Guarantee**: Strictly exclude redundant meta-commentary, introductory politeness, self-congratulatory postambles, or explanations of obvious actions.
+- **Bullet Points**: Use strict bullet points (`-`) for explanations/summaries. No continuous prose paragraphs.
+- **No-Op**: Emit minimal status if no action is needed (`Clean. No action needed.`).
+- **Action Completed**: Output concise execution summaries without full diffs or restating steps.
+- **Non-Noise**: Exclude preamble, greetings, conversational filler, and self-congratulatory postambles.
 
 ---
 
-## Anti-Pattern Diagnostics (Failure Modes)
+## Anti-Pattern Diagnostics
 
-When auditing skills, actively identify and eliminate failure modes such as **Premature Completion**, **Duplication**, **Sediment**, **Sprawl**, **No-ops**, **Negation**, and **Output Noise**. 
+Identify and eliminate: **Premature Completion**, **Duplication**, **Sediment**, **Sprawl**, **No-ops**, **Negation**, and **Output Noise**.
 
-*(See `GLOSSARY.md` for exact definitions and remedies for each anti-pattern.)*
+*(See `GLOSSARY.md` for definitions and remedies.)*
 
 ---
 
-## Skill Audit Workflow
+## Audit Workflow
 
-When auditing or refining a skill:
-
-1. **Ingest & Dissect**: Read the target skill using `view_file`.
-2. **Diagnose Failure Modes**: Check for Sediment, Sprawl, No-ops, Output Noise, and Negation.
-3. **Refine Lexicon**: Replace generic terms with **Matt Pocock Lexicon** and **Leading Words**.
+1. **Ingest & Dissect**: Read target skill and analyze structure.
+2. **Diagnose Failure Modes**: Check for Sediment, Sprawl, No-ops, Output Noise, Negation, and Over-specified Tooling.
+3. **Refine Lexicon & Prune Prose**: Replace generic terms with precise **Domain Lexicon**, strip redundant filler, and convert verbose tool names into implicit action verbs.
 4. **Enforce Hierarchy**: Ensure every step ends with an explicit **Completion Criterion**.
-5. **Enforce Zero-Noise Output Contract**: Strip out conversational preamble, postamble, and unnecessary filler from execution prompts.
-6. **Synthesize Changes**: Apply edits via `replace_file_content` and report structural improvements concisely.
+5. **Enforce Zero-Noise Output Contract**: Strip preamble, postamble, and conversational filler.
+6. **Synthesize Changes**: Apply edits and report concise structural improvements.
 
 ---
 
 ## Validation Checklist
-- [ ] Frontmatter explicitly tuned for Context vs. Cognitive load?
-- [ ] Every step terminates on a checkable **Completion Criterion**?
+- [ ] Frontmatter tuned for Context vs. Cognitive load?
+- [ ] Free of explicit tool-name over-specification (implicit tooling applied)?
+- [ ] Stripped of conversational prose filler, preamble, and postamble?
+- [ ] Steps terminate on checkable **Completion Criteria**?
 - [ ] Free of Sediment, Sprawl, No-ops, Output Noise, and Negation?
 - [ ] Replaced generic verbs with precise domain terms?
-- [ ] Output contract strictly limits responses to High-Signal / Zero-Noise format?
+- [ ] Output strictly obeys High-Signal / Zero-Noise contract?
