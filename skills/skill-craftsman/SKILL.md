@@ -42,8 +42,10 @@ Anchor complex behavior using pretrained conceptual shortcuts (e.g., *tight*, *r
 
 ### 4. High-Signal / Zero-Noise Output Contract
 Skills MUST enforce maximum signal-to-noise ratio in output responses. Eliminate preamble, conversational filler, greetings, and redundant summaries:
+- **Bullet-Point Explanations**: ALWAYS explain, report, or summarize any finding, result, or concept using strict bullet points (`-` or `*`). Never output continuous prose paragraphs.
 - **No-Op / No Action Required**: If target code or skill is already optimal, emit minimal confirmation status (e.g., `Clean. No action needed.` or `Optimal. Ready.`).
 - **Action Completed**: Output only direct, high-value execution summaries without echoing full diffs or restating obvious step-by-step logic.
+- **Non-Noise Guarantee**: Strictly exclude redundant meta-commentary, introductory politeness, self-congratulatory postambles, or explanations of obvious actions.
 
 ---
 
