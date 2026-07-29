@@ -52,3 +52,4 @@ When authoring or refining skills, eliminate ambiguous prose and adopt these **c
 | *Bloated skill file* | **Sprawl** | Skill file too long. *Fix: Progressive disclosure via context pointers.* |
 | *Useless default rule* | **No-op** | Instruction model follows anyway. *Fix: Delete or replace with stronger leading word.* |
 | *Telling AI what NOT to do* | **Negation** | Steering by prohibition. *Fix: Frame positively (tell what TO do).* |
+| *Chatty / Verbose response* | **Output Noise** | Preamble, greetings, and redundant execution chatter. *Fix: High-Signal / Zero-Noise Output Contract (e.g. `Clean. No action needed.`).* |

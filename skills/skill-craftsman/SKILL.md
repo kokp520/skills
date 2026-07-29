@@ -40,11 +40,16 @@ Always refer to `GLOSSARY.md` for the exact definitions of terms like *Behaviora
 ### 3. Leading Words (Token Compression)
 Anchor complex behavior using pretrained conceptual shortcuts (e.g., *tight*, *red*, *legwork*). A single strong **leading word** can collapse multi-sentence instructions into a single high-signal token.
 
+### 4. High-Signal / Zero-Noise Output Contract
+Skills MUST enforce maximum signal-to-noise ratio in output responses. Eliminate preamble, conversational filler, greetings, and redundant summaries:
+- **No-Op / No Action Required**: If target code or skill is already optimal, emit minimal confirmation status (e.g., `Clean. No action needed.` or `Optimal. Ready.`).
+- **Action Completed**: Output only direct, high-value execution summaries without echoing full diffs or restating obvious step-by-step logic.
+
 ---
 
 ## Anti-Pattern Diagnostics (Failure Modes)
 
-When auditing skills, actively identify and eliminate failure modes such as **Premature Completion**, **Duplication**, **Sediment**, **Sprawl**, **No-ops**, and **Negation**. 
+When auditing skills, actively identify and eliminate failure modes such as **Premature Completion**, **Duplication**, **Sediment**, **Sprawl**, **No-ops**, **Negation**, and **Output Noise**. 
 
 *(See `GLOSSARY.md` for exact definitions and remedies for each anti-pattern.)*
 
@@ -55,15 +60,17 @@ When auditing skills, actively identify and eliminate failure modes such as **Pr
 When auditing or refining a skill:
 
 1. **Ingest & Dissect**: Read the target skill using `view_file`.
-2. **Diagnose Failure Modes**: Check for Sediment, Sprawl, No-ops, and Negation.
+2. **Diagnose Failure Modes**: Check for Sediment, Sprawl, No-ops, Output Noise, and Negation.
 3. **Refine Lexicon**: Replace generic terms with **Matt Pocock Lexicon** and **Leading Words**.
 4. **Enforce Hierarchy**: Ensure every step ends with an explicit **Completion Criterion**.
-5. **Synthesize Changes**: Apply edits via `replace_file_content` and report structural improvements.
+5. **Enforce Zero-Noise Output Contract**: Strip out conversational preamble, postamble, and unnecessary filler from execution prompts.
+6. **Synthesize Changes**: Apply edits via `replace_file_content` and report structural improvements concisely.
 
 ---
 
 ## Validation Checklist
 - [ ] Frontmatter explicitly tuned for Context vs. Cognitive load?
 - [ ] Every step terminates on a checkable **Completion Criterion**?
-- [ ] Free of Sediment, Sprawl, No-ops, and Negation?
+- [ ] Free of Sediment, Sprawl, No-ops, Output Noise, and Negation?
 - [ ] Replaced generic verbs with precise domain terms?
+- [ ] Output contract strictly limits responses to High-Signal / Zero-Noise format?
