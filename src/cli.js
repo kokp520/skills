@@ -23,7 +23,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 const LOCAL_SKILLS_DIR = path.join(PROJECT_ROOT, 'skills');
 
 // Default GitHub fallback for wadiolk's official skills
-const DEFAULT_GITHUB_OWNER_REPO = 'kokp520/skills';
+const DEFAULT_GITHUB_OWNER_REPO = 'adiolk98/skills';
 
 const ARGS = process.argv.slice(2);
 const COMMAND = ARGS[0];
@@ -180,22 +180,37 @@ function handleValidate() {
     return;
   }
 
-  const localSkills = fs.readdirSync(LOCAL_SKILLS_DIR).filter(file => {
-    const fullPath = path.join(LOCAL_SKILLS_DIR, file);
-    return fs.statSync(fullPath).isDirectory() && file !== 'template';
-  });
+  // Helper function to find all directories containing SKILL.md recursively
+  function findSkillDirs(dir) {
+    let results = [];
+    const list = fs.readdirSync(dir);
+    list.forEach(file => {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat && stat.isDirectory() && file !== 'template') {
+        if (fs.existsSync(path.join(fullPath, 'SKILL.md'))) {
+          results.push(fullPath);
+        } else {
+          results = results.concat(findSkillDirs(fullPath));
+        }
+      }
+    });
+    return results;
+  }
+
+  const skillDirs = findSkillDirs(LOCAL_SKILLS_DIR);
 
   console.log(`${BLUE}[INFO] Validating skills formatting...${RESET}\n`);
 
   let errorCount = 0;
   let warnCount = 0;
 
-  for (const skill of localSkills) {
-    const skillDir = path.join(LOCAL_SKILLS_DIR, skill);
+  for (const skillDir of skillDirs) {
+    const relName = path.relative(LOCAL_SKILLS_DIR, skillDir);
     const skillMdPath = path.join(skillDir, 'SKILL.md');
 
     if (!fs.existsSync(skillMdPath)) {
-      console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${skill}${RESET}: SKILL.md file not found`);
+      console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${relName}${RESET}: SKILL.md file not found`);
       errorCount++;
       continue;
     }
@@ -205,7 +220,7 @@ function handleValidate() {
       const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
       if (!frontmatterMatch) {
-        console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${skill}${RESET}: SKILL.md is missing Frontmatter (enclosed in ---)`);
+        console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${relName}${RESET}: SKILL.md is missing Frontmatter (enclosed in ---)`);
         errorCount++;
         continue;
       }
@@ -218,19 +233,19 @@ function handleValidate() {
       const parsedDesc = descMatch ? descMatch[1].trim() : '';
 
       if (!parsedName) {
-        console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${skill}${RESET}: Missing 'name' field in Frontmatter`);
+        console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${relName}${RESET}: Missing 'name' field in Frontmatter`);
         errorCount++;
         continue;
       }
 
       if (!parsedDesc) {
-        console.log(`  ${YELLOW}[WARN]${RESET}  - ${CYAN}${skill}${RESET}: Missing 'description' in Frontmatter (highly recommended)`);
+        console.log(`  ${YELLOW}[WARN]${RESET}  - ${CYAN}${relName}${RESET}: Missing 'description' in Frontmatter (highly recommended)`);
         warnCount++;
       } else {
-        console.log(`  ${GREEN}[PASS]${RESET}  - ${CYAN}${skill}${RESET} (name: ${parsedName})`);
+        console.log(`  ${GREEN}[PASS]${RESET}  - ${CYAN}${relName}${RESET} (name: ${parsedName})`);
       }
     } catch (err) {
-      console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${skill}${RESET}: Read or parse failure: ${err.message}`);
+      console.log(`  ${RED}[ERROR]${RESET} - ${CYAN}${relName}${RESET}: Read or parse failure: ${err.message}`);
       errorCount++;
     }
   }

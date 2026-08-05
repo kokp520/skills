@@ -1,33 +1,66 @@
 # My Skills
 
-Wadiolk is a zero-dependency CLI package built to bootstrap, validate, and manage custom skills for the Gemini Antigravity Agent. It is heavily inspired by the open-source mattpocock/skills workflow, adapted for structured local development and project distribution.
+Wadiolk is a zero-dependency CLI package built to bootstrap, validate, and manage custom skills for AI coding assistants (Gemini Antigravity Agent & Claude Code). It is heavily inspired by the open-source mattpocock/skills workflow, adapted for structured local development and project distribution.
 
 ## Key Features
 
+- **Multi-Assistant Support**: Native compatibility for Gemini CLI extensions (`gemini extensions install`) and Claude Code plugin management (`/plugin`).
 - **Zero-Dependency**: Written entirely in Node.js native APIs. Boots up in under 10ms.
 - **Linter Validation**: Scans SKILL.md Frontmatter schemas to guarantee compatibility before loading.
-- **Project Distribution**: Installs specific skill snapshots straight into a project's .gemini/skills/ folder for seamless Git collaboration.
+- **Project Distribution**: Installs specific skill snapshots straight into a project's `.gemini/skills/` or `.claude/skills/` folder for seamless Git collaboration.
+
+## Installation Methods
+
+### 1. Gemini CLI Extension
+Install as a Gemini CLI extension directly from GitHub:
+```bash
+gemini extensions install https://github.com/adiolk98/skills
+```
+
+### 2. Claude Code Plugin
+Install or register as a plugin in Claude Code:
+
+- **Direct Repository / Marketplace Addition**:
+  ```bash
+  /plugin marketplace add adiolk98/skills
+  ```
+
+- **Installing from Marketplace**:
+  ```bash
+  /plugin install skills@adiolk98
+  ```
+
+- **Local Development / Testing**:
+  ```bash
+  claude --plugin-dir ./
+  ```
+
+---
 
 ## Directory Structure
 
 ```text
-wadiolk/
-├── CONTEXT.md           # Project rules (including the strict No-Emoji policy)
+skills/
+├── .claude-plugin/
+│   └── plugin.json      # Claude Code Plugin Manifest
+├── gemini-extension.json # Gemini CLI Extension Manifest
+├── plugin.json          # Root Plugin Metadata
+├── CONTEXT.md           # Project rules
 ├── package.json         # Package definitions and binary mapping
 ├── README.md            # Brief documentation
 ├── src/
 │   └── cli.js           # Core zero-dependency CLI executable
-├── skills/              # Your custom developer skills
-│   ├── edd-skill-creator/    # Create and refine AI agent skills using Evaluation-Driven Development (EDD)
-│   ├── frontend/             # Frontend / UX design skills
-│   │   └── production-UX-design/ # Portal-style UX pattern kit (themeable)
-│   ├── git-split-commit/     # Interactive conventional split commit generator
-│   ├── linebot-gas-architect/# Architecture guide, setup, and testing workflows for GAS-based LINE Bots
-│   ├── open-br/              # Fast diff-based short git branch generator
-│   ├── open-pr/              # GitHub pull request creator
-│   ├── pr-comment-resolver/  # Automated PR review comment resolver & reply poster
-│   ├── pr-critic/            # GitHub PR reviewer and critic via gh CLI
-│   └── skill-craftsman/      # Reference & reviewer for auditing AI agent skills
+└── skills/              # Your custom developer skills
+    ├── edd-skill-creator/    # Create and refine AI agent skills using Evaluation-Driven Development (EDD)
+    ├── frontend/             # Frontend / UX design skills
+    │   └── production-UX-design/ # Portal-style UX pattern kit (themeable)
+    ├── git-split-commit/     # Interactive conventional split commit generator
+    ├── linebot-gas-architect/# Architecture guide, setup, and testing workflows for GAS-based LINE Bots
+    ├── open-br/              # Fast diff-based short git branch generator
+    ├── open-pr/              # GitHub pull request creator
+    ├── pr-comment-resolver/  # Automated PR review comment resolver & reply poster
+    ├── pr-critic/            # GitHub PR reviewer and critic via gh CLI
+    └── skill-craftsman/      # Reference & reviewer for auditing AI agent skills
 ```
 
 ## Cross-Project Distribution via npx / bunx
@@ -38,18 +71,18 @@ Once published to NPM or configured with local registry, you can execute these c
 | :--- | :--- | :--- |
 | List Skills | npx skills list | bunx skills list |
 | Validate Format | npx skills validate | bunx skills validate |
-| Add to Project | npx skills@latest add kokp520/skills/<name> | bunx skills add <name> |
+| Add to Project | npx skills@latest add adiolk98/skills/<name> | bunx skills add <name> |
 | Help Menu | npx skills help | bunx skills help |
 
 *Note: If the package is not yet published or installed globally, you can fallback to using the remote GitHub resolver:*
-* `npx github:kokp520/skills <command>`
+* `npx github:adiolk98/skills <command>`
 
 ---
 
-## Install
+## Install Individual Skill via CLI
 
 ```bash
-npx skills@latest add kokp520/skills/<skill-name>
+npx skills@latest add adiolk98/skills/<skill-name>
 ```
 
 ---
