@@ -1,9 +1,3 @@
 {
-  "name": "skills",
-  "displayName": "Skills Collection",
-  "version": "1.0.0",
-  "description": "Personal Developer Skills collection for AI Coding Assistants (Gemini & Claude Code)",
-  "author": {
-    "name": "adiolk98"
-  }
+  "name": "adiolk98"
 }
