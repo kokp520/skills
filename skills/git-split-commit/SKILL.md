@@ -38,3 +38,11 @@ I have analyzed the changes and suggest splitting them into the following commit
 
 Do you approve this plan?
 ```
+
+## Output format
+
+```
+Done.
+
+<- commits>
+```
